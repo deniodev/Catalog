@@ -1,14 +1,11 @@
 class Item
   attr_reader :id
-  attr_accessor :genre, :author, :source, :label, :publish_date, :archived
+  attr_accessor :genre, :author, :source, :label, :publish_date
 
-  def initialize(genre, author, source, label, publish_date)
+  def initialize(publish_date, archived: false)
     @id = rand(1000)
-    @genre = genre
-    @author = author
-    @source = source
-    @label = label
     @publish_date = publish_date
+    @archived = archived
   end
 
   def can_be_archived?
