@@ -16,7 +16,7 @@ class Author
     item.author = self
   end
 
-  def to_json
+  def to_json(*_args)
     JSON.parse(
       author: {
         id: @id,

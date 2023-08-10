@@ -15,7 +15,7 @@ class Game < Item
     super && Time.now.year - last_played_at.year > 2
   end
 
-  def to_json
+  def to_json(*_args)
     JSON.parse(
       game: {
         published: @publish_date,
