@@ -1,3 +1,5 @@
+require 'json'
+
 class Author
   attr_reader :id, :items
   attr_accessor :first_name, :last_name
@@ -10,16 +12,18 @@ class Author
   end
 
   def add_item(item)
-    items << item unless items.includes?(item)
+    items << item unless items.include?(item)
     item.author = self
   end
 
   def to_json
-    {
-      id: @id,
-      first_name: @first_name,
-      last_name: @last_name,
-      item: @item
-    }
+    JSON.parse(
+      author: {
+        id: @id,
+        first_name: @first_name,
+        last_name: @last_name,
+        item: @item
+      }
+    )
   end
 end
