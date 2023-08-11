@@ -1,5 +1,5 @@
-require_relative 'genre'
-require_relative 'music_album'
+require_relative './music/genre'
+require_relative './music/music_album'
 require 'json'
 
 class App
@@ -10,12 +10,12 @@ class App
   end
 
   def load_data
-    @music_albums = JSON.parse(File.read('music_albums.json')) unless File.empty?('music_albums.json')
-    @genres = JSON.parse(File.read('music_genres.json')) unless File.empty?('music_genres.json')
+    @music_albums = JSON.parse(File.read('./music/music_albums.json')) unless File.empty?('./music/music_albums.json')
+    @genres = JSON.parse(File.read('./music/music_genres.json')) unless File.empty?('./music/music_genres.json')
   end
 
   def save_music_albums
-    File.write('music_albums.json', @music_albums.to_json)
+    File.write('./music/music_albums.json', @music_albums.to_json)
   end
 
   def display_menu
@@ -27,7 +27,7 @@ class App
   end
 
   def save_music_genres
-    File.open('music_genres.json', 'w') do |f|
+    File.open('./music/music_genres.json', 'w') do |f|
       f.puts @genres.to_json
     end
   end
