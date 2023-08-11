@@ -7,23 +7,34 @@ class App
     @items = []
     @genres = []
     @music_albums = []
+    @file_path = './storage/'.freeze
   end
 
   def load_data
-    @music_albums = JSON.parse(File.read('./music/music_albums.json')) unless File.empty?('./music/music_albums.json')
-    @genres = JSON.parse(File.read('./music/music_genres.json')) unless File.empty?('./music/music_genres.json')
+    unless File.empty?("#{@file_path}music_albums.json")
+      @music_albums = JSON.parse(File.read("#{@file_path}music_albums.json"))
+    end
+    return if File.empty?("#{@file_path}music_genres.json")
+
+    @genres = JSON.parse(File.read("#{@file_path}music_genres.json"))
   end
 
   def save_music_albums
-    File.write('./music/music_albums.json', @music_albums.to_json)
+    File.write("#{@file_path}music_albums.json", @music_albums.to_json)
   end
 
   def display_menu
-    puts '1. Add genre'
-    puts '2. Add music album'
-    puts '3. list music album'
-    puts '4. List music genres'
-    puts '5. exit'
+    puts '1. List all books'
+    puts '2. List all music albums'
+    puts '3. List of games'
+    puts '4. List all Labels'
+    puts '5. List all Authors'
+    puts '6. List all genres'
+    puts '7. List all sources'
+    puts '8. Add a book'
+    puts '9. Add a music album'
+    puts '10. Add a game'
+    puts '11. exit'
   end
 
   def process_input(exit: false)
@@ -31,14 +42,26 @@ class App
     input = gets.chomp.to_i
     case input
     when 1
-      add_genre
+      puts 'List all books'
     when 2
-      add_music_album
-    when 3
       list_music_albums
+    when 3
+      puts 'List of games'
     when 4
-      list_music_genres
+      puts 'List all Labels'
     when 5
+      puts 'List all Authors'
+    when 6
+      list_music_genres
+    when 7
+      puts 'List all sources'
+    when 8
+      puts 'Add a book'
+    when 9
+      add_music_album
+    when 10
+      puts 'Add a game'
+    when 11
       save_music_albums
       exit = true
     else
@@ -48,7 +71,7 @@ class App
   end
 
   def save_music_genres
-    File.open('./music/music_genres.json', 'w') do |f|
+    File.open("#{@file_path}music_genres.json", 'w') do |f|
       f.puts @genres.to_json
     end
   end
@@ -116,7 +139,6 @@ class App
     loop do
       display_menu
       break if process_input
-      # break if exit
     end
   end
 end
