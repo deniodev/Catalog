@@ -1,5 +1,5 @@
-require_relative './music/genre'
-require_relative './music/music_album'
+require_relative 'music/genre'
+require_relative 'music/music_album'
 require 'json'
 
 class App
@@ -26,6 +26,27 @@ class App
     puts '5. exit'
   end
 
+  def process_input(exit: false)
+    puts 'Enter your choice:'
+    input = gets.chomp.to_i
+    case input
+    when 1
+      add_genre
+    when 2
+      add_music_album
+    when 3
+      list_music_albums
+    when 4
+      list_music_genres
+    when 5
+      save_music_albums
+      exit = true
+    else
+      puts 'Invalid input'
+    end
+    exit
+  end
+
   def save_music_genres
     File.open('./music/music_genres.json', 'w') do |f|
       f.puts @genres.to_json
@@ -44,9 +65,9 @@ class App
   def select_genre
     puts 'select option to add genre:'
     puts '0. enter new genre'
-    @genres.each_with_index { |genre, index| puts "#{index + 1}. #{genre["name"]}"}
+    @genres.each_with_index { |genre, index| puts "#{index + 1}. #{genre['name']}" }
     input = gets.chomp.to_i
-    if input == 0
+    if input.zero?
       add_genre
       select_genre
     else
@@ -68,11 +89,11 @@ class App
     music_album = MusicAlbum.new(title, published_date, artist, genre, on_spotify)
     @music_albums << music_album.as_json
     @genres.each do |saved_genre|
-      if saved_genre['name'] == genre
-        puts "saved_genre = #{saved_genre}"
-        saved_genre['items'] << music_album.as_json
-        puts "saved_genre = #{saved_genre['items']}"
-      end
+      next unless saved_genre['name'] == genre
+
+      puts "saved_genre = #{saved_genre}"
+      saved_genre['items'] << music_album.as_json
+      puts "saved_genre = #{saved_genre['items']}"
     end
     save_music_albums
     save_music_genres
@@ -94,24 +115,8 @@ class App
     load_data
     loop do
       display_menu
-      puts 'Enter your choice:'
-      input = gets.chomp.to_i
-
-      case input
-      when 1
-        add_genre
-      when 2
-        add_music_album
-      when 3
-        list_music_albums
-      when 4
-        list_music_genres
-      when 5
-        save_music_albums
-        break
-      else
-        puts 'Invalid input'
-      end
+      break if process_input
+      # break if exit
     end
   end
 end
