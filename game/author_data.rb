@@ -10,7 +10,6 @@ class AuthorData
     File.open(AuthorData.path, 'w') do |f|
       f.puts authors.to_json
     end
-    puts 'Authors saved successfully.'
   end
 
   def self.read_data
