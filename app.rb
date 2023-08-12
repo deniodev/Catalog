@@ -273,6 +273,7 @@ class App
       puts game
     end
   end
+
   def add_author
     puts 'Adding Author...'
     add_author = AddAuthor.new
