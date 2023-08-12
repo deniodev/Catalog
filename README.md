@@ -30,6 +30,9 @@
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+## Project Demonstration
+View a video demo of our project [here](https://drive.google.com/file/d/1U8LVpmkEmn5zLwWKFKxGYYIRdgCJbmuC/view?usp=sharing)
+
 ## Key Features
 
 - Class functionality
