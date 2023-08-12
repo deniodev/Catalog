@@ -4,10 +4,10 @@ require 'rspec'
 require 'date'
 
 RSpec.describe MusicAlbum do
-    let(:published_date) { Date.new(2020, 1, 1).year }
-    let(:music_album) { MusicAlbum.new('Album Title', published_date, 'Artist Name', 'Genre Name', true) }
+  let(:published_date) { Date.new(2020, 1, 1).year }
+  let(:music_album) { MusicAlbum.new('Album Title', published_date, 'Artist Name', 'Genre Name', true) }
 
-    describe '#can_be_archived?' do
+  describe '#can_be_archived?' do
     context 'when published less than 10 years ago and on Spotify' do
       it 'returns false' do
         allow(music_album).to receive(:arc).and_return(9)
