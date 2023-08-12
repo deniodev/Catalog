@@ -267,7 +267,7 @@ class App
   end
 
   def list_games
-    puts 'No Games Availabe' unless !@games.empty?
+    puts 'No Games Availabe' if @games.empty?
     puts 'Listing games...' unless @games.empty?
     @games.each do |game|
       puts game
@@ -282,7 +282,7 @@ class App
   end
 
   def list_author
-    puts 'No Authors Availabe' unless !@authors.empty?
+    puts 'No Authors Availabe' if @authors.empty?
     puts 'Listing authors...' unless @authors.empty?
     @authors.each do |author|
       puts author
