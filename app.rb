@@ -18,18 +18,18 @@ class App
     @games = []
     @authors = []
     @file_path = './storage/'.freeze
-    @books = read_books
-    all_books = File.read("#{@file_path}book.json")
-    File.write("#{@file_path}book.json", []) if all_books.empty?
+    @books = []
+    Dir.mkdir(@file_path) unless File.exists?(@file_path)
   end
 
   def load_data
-    @music_albums = JSON.parse(File.read("#{@file_path}music_albums.json")) unless File.empty?("#{@file_path}music_albums.json")
+    @music_albums = JSON.parse(File.read("#{@file_path}music_albums.json")) if File.exist?("#{@file_path}music_albums.json")
     return if File.empty?("#{@file_path}music_genres.json")
 
-    @genres = JSON.parse(File.read("#{@file_path}music_genres.json"))
+    @genres = JSON.parse(File.read("#{@file_path}music_genres.json")) if File.exist?("#{@file_path}music_genres.json")
     @games = GameData.read_data
     @authors = AuthorData.read_data
+    @books = read_books
   end
 
   def save_music_albums
@@ -38,7 +38,11 @@ class App
 
   def read_books
     books = []
-    all_books = File.read("#{@file_path}book.json")
+    if File.exist?("#{@file_path}book.json")
+      all_books = File.read("#{@file_path}book.json") 
+    else
+      all_books = []
+    end
     if all_books.empty?
       puts 'No available books '
     elsif all_books.class != NilClass
@@ -54,7 +58,8 @@ class App
   end
 
   def write_books(book)
-    all_books = JSON.parse(File.read("#{@file_path}book.json"))
+    all_books = JSON.parse(File.read("#{@file_path}book.json")) if File.exist?("#{@file_path}book.json")
+    all_books = [] unless File.exist?("#{@file_path}book.json")
     temp = {
       publisher: book.publisher,
       cover_state: book.cover_state,
@@ -177,7 +182,7 @@ class App
   def list_music_genres
     puts 'music genres list:'
     @genres.each_with_index do |genre, index|
-      puts "#{index + 1}. #{genre['name']}"
+      puts "#{index + 1}. #{genre['name'] || genre[:name]}"
     end
   end
 
@@ -215,7 +220,7 @@ class App
       puts 'The book list: '
       puts
       @books.each_with_index do |b, indx|
-        puts "#{indx + 1}) Publisher: #{b.publisher} | Publish Date: #{b.publish_date} | Cover state: #{b.cover_state} | label: "
+        puts "#{indx + 1}) Publisher: #{b.publisher} | Publish Date: #{b.publish_date} | Cover state: #{b.cover_state} | label: #{b.label.title}"
       end
     end
   end
@@ -281,7 +286,7 @@ class App
     puts 'No Authors Availabe' if @authors.empty?
     puts 'Listing authors...' unless @authors.empty?
     @authors.each do |author|
-      puts author
+      puts "ID:#{author['id']} | #{author['first_name']} #{author['last_name']}"
     end
   end
 end
