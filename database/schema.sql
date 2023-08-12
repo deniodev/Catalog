@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS games(
   multiplayer boolean,
   last_played date,
   publish_date date
+)
 
 CREATE TABLE IF NOT EXISTS label(
  id INTEGER GENERATED PRIMARY KEY,
