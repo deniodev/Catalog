@@ -1,5 +1,10 @@
 require_relative 'music/genre'
 require_relative 'music/music_album'
+require_relative 'game/game'
+require_relative 'game/game_data'
+require_relative 'game/add_game'
+require_relative 'game/add_author'
+require_relative 'game/author_data'
 require_relative 'book/book'
 require_relative 'book/label'
 require_relative 'game/author'
@@ -10,6 +15,8 @@ class App
     @items = []
     @genres = []
     @music_albums = []
+    @games = []
+    @authors = []
     @file_path = './storage/'.freeze
     @books = read_books
     all_books = File.read("#{@file_path}book.json")
@@ -21,6 +28,8 @@ class App
     return if File.empty?("#{@file_path}music_genres.json")
 
     @genres = JSON.parse(File.read("#{@file_path}music_genres.json"))
+    @games = GameData.read_data
+    @authors = AuthorData.read_data
   end
 
   def save_music_albums
@@ -71,7 +80,8 @@ class App
     puts '8. Add a book'
     puts '9. Add a music album'
     puts '10. Add a game'
-    puts '11. exit'
+    puts '11. Add an author'
+    puts '12. exit'
   end
 
   def process_input(exit: false)
@@ -83,11 +93,11 @@ class App
     when 2
       list_music_albums
     when 3
-      puts 'List of games'
+      list_games
     when 4
       puts labels_list
     when 5
-      puts 'List all Authors'
+      list_author
     when 6
       list_music_genres
     when 7
@@ -97,9 +107,13 @@ class App
     when 9
       add_music_album
     when 10
-      puts 'Add a game'
+      add_game
     when 11
+      add_author
+    when 12
       save_music_albums
+      GameData.save_data(@games)
+      AuthorData.save_data(@authors)
       exit = true
     else
       puts 'Invalid input'
@@ -241,6 +255,38 @@ class App
     loop do
       display_menu
       break if process_input
+    end
+  end
+
+  def add_game
+    puts 'Creating Game...'
+    add_game = AddGame.new
+    @games << add_game.create_game
+    puts "The game was successfully created!\n\n"
+    puts @games
+  end
+
+  def list_games
+    puts 'No Games Availabe' if @games.empty?
+    puts 'Listing games...' unless @games.empty?
+    @games.each do |game|
+      puts game
+    end
+  end
+
+  def add_author
+    puts 'Adding Author...'
+    add_author = AddAuthor.new
+    @authors << add_author.create_author
+    puts "The Author was successfully created!\n\n"
+    puts @author
+  end
+
+  def list_author
+    puts 'No Authors Availabe' if @authors.empty?
+    puts 'Listing authors...' unless @authors.empty?
+    @authors.each do |author|
+      puts author
     end
   end
 end

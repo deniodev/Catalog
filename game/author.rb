@@ -17,13 +17,10 @@ class Author
   end
 
   def to_json(*_args)
-    JSON.parse(
-      author: {
-        id: @id,
-        first_name: @first_name,
-        last_name: @last_name,
-        item: @item
-      }
-    )
+    {
+      id: @id,
+      first_name: @first_name,
+      last_name: @last_name
+    }
   end
 end
