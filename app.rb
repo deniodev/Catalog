@@ -5,6 +5,9 @@ require_relative 'game/game_data'
 require_relative 'game/add_game'
 require_relative 'game/add_author'
 require_relative 'game/author_data'
+require_relative 'book/book'
+require_relative 'book/label'
+require_relative 'game/author'
 require 'json'
 
 class App
@@ -15,12 +18,13 @@ class App
     @games = []
     @authors = []
     @file_path = './storage/'.freeze
+    @books = read_books
+    all_books = File.read("#{@file_path}book.json")
+    File.write("#{@file_path}book.json", []) if all_books.empty?
   end
 
   def load_data
-    unless File.empty?("#{@file_path}music_albums.json")
-      @music_albums = JSON.parse(File.read("#{@file_path}music_albums.json"))
-    end
+    @music_albums = JSON.parse(File.read("#{@file_path}music_albums.json")) unless File.empty?("#{@file_path}music_albums.json")
     return if File.empty?("#{@file_path}music_genres.json")
 
     @genres = JSON.parse(File.read("#{@file_path}music_genres.json"))
@@ -30,6 +34,39 @@ class App
 
   def save_music_albums
     File.write("#{@file_path}music_albums.json", @music_albums.to_json)
+  end
+
+  def read_books
+    books = []
+    all_books = File.read("#{@file_path}book.json")
+    if all_books.empty?
+      puts 'No available books '
+    elsif all_books.class != NilClass
+      JSON.parse(all_books).each do |book|
+        new_label = Label.new(book['label'], book['color'])
+        Author.new(book['first_name'], book['last_name'])
+        new_book = Book.new(book['publisher'], book['cover_state'], book['publish_date'])
+        new_book.add_label(new_label)
+        books.push(new_book)
+      end
+    end
+    books
+  end
+
+  def write_books(book)
+    all_books = JSON.parse(File.read("#{@file_path}book.json"))
+    temp = {
+      publisher: book.publisher,
+      cover_state: book.cover_state,
+      publish_date: book.publish_date,
+      label: book.label.title,
+      color: book.label.color,
+      first_name: book.author.first_name,
+      last_name: book.author.last_name
+    }
+    all_books.push(temp)
+
+    File.write("#{@file_path}book.json", JSON.generate(all_books))
   end
 
   def display_menu
@@ -52,13 +89,13 @@ class App
     input = gets.chomp.to_i
     case input
     when 1
-      puts 'List all books'
+      books_list
     when 2
       list_music_albums
     when 3
       list_games
     when 4
-      puts 'List all Labels'
+      puts labels_list
     when 5
       list_author
     when 6
@@ -66,7 +103,7 @@ class App
     when 7
       puts 'List all sources'
     when 8
-      puts 'Add a book'
+      add_book
     when 9
       add_music_album
     when 10
@@ -145,6 +182,71 @@ class App
   def list_music_genres
     @genres.each do |genre|
       puts genre
+    end
+  end
+
+  def add_book
+    puts 'Publisher:'
+    publisher = gets.chomp
+    puts 'Cover state Good (Y) OR Bad (N):'
+    state = gets.chomp
+    cover_state = cover_state_choice(state.downcase)
+    puts 'Publish year:'
+    time = gets.chomp
+    puts 'Book label name:'
+    label_name = gets.chomp
+    puts 'Book color:'
+    color = gets.chomp
+    puts 'Book author first name:'
+    author_first_name = gets.chomp
+    puts 'Book author last name:'
+    author_last_name = gets.chomp
+    label = Label.new(label_name, color)
+    author = Author.new(author_first_name, author_last_name)
+    book = Book.new(publisher, cover_state, time)
+    book.add_label(label)
+    book.author = author
+    write_books(book)
+    @books << book
+    puts 'Book added successfully.'
+  end
+
+  def books_list
+    if @books.empty?
+      puts 'No available books !'
+    else
+      puts
+      puts 'The book list: '
+      puts
+      @books.each_with_index do |b, indx|
+        puts "#{indx + 1}) Publisher: #{b.publisher} | Publish Date: #{b.publish_date} | Cover state: #{b.cover_state} | label: #{b.label.title}"
+      end
+    end
+  end
+
+  def labels_list
+    if @books.empty?
+      puts 'No books available'
+    else
+      uniq_labels = @books.uniq { |x| x.label.title }
+      uniq_labels.each_with_index do |s, index|
+        puts "#{index + 1})  Title: #{s.label.title} | Color: #{s.label.color}"
+      end
+    end
+  end
+
+  def cover_state_choice(state)
+    case state
+    when 'y'
+      'good'
+    when 'n'
+      'bad'
+    else
+      puts 'Invalid'
+      puts ''
+      puts 'Cover state Good (Y) OR Bad (N):'
+      state = gets.chomp
+      cover_state_choice(state)
     end
   end
 
