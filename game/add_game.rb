@@ -13,10 +13,15 @@ class AddGame
 
     print 'When was the last time it was played? (YYYY-MM-DD): '
     last_played_at = gets.chomp
-
-    game = Game.new(multiplayer, last_played_at, title, publish_date) unless publish_date.empty?
-    game = Game.new(multiplayer, last_played_at, title) unless !publish_date.empty?
-    game.to_json
+    # if publish_date.empty?
+    #   game = Game.new(multiplayer, last_played_at, title)
+    #   game.to_json
+    # else
+    #   game = Game.new(multiplayer, last_played_at, title, publish_date)
+    #   game.to_json
+    # end
+    return Game.new(multiplayer, last_played_at, title, publish_date).to_json unless publish_date.empty?
+    return Game.new(multiplayer, last_played_at, title).to_json if !publish_date.empty?
   end
 
   def answer_yes?
