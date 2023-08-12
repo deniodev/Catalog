@@ -9,7 +9,6 @@ class GameData
     File.open(GameData.path, 'w') do |f|
       f.puts games.to_json
     end
-
   rescue Errno::ENOENT => e
     puts "Error: #{e.message}"
   end
