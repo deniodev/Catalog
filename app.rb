@@ -76,12 +76,11 @@ class App
     puts '4. List all Labels'
     puts '5. List all Authors'
     puts '6. List all genres'
-    puts '7. List all sources'
-    puts '8. Add a book'
-    puts '9. Add a music album'
-    puts '10. Add a game'
-    puts '11. Add an author'
-    puts '12. exit'
+    puts '7. Add a book'
+    puts '8. Add a music album'
+    puts '9. Add a game'
+    puts '10. Add an author'
+    puts '11. exit'
   end
 
   def process_input(exit: false)
@@ -95,22 +94,20 @@ class App
     when 3
       list_games
     when 4
-      puts labels_list
+      labels_list
     when 5
       list_author
     when 6
       list_music_genres
     when 7
-      puts 'List all sources'
-    when 8
       add_book
-    when 9
+    when 8
       add_music_album
-    when 10
+    when 9
       add_game
-    when 11
+    when 10
       add_author
-    when 12
+    when 11
       save_music_albums
       GameData.save_data(@games)
       AuthorData.save_data(@authors)
@@ -133,13 +130,12 @@ class App
     genre = Genre.new(name)
     @genres << genre.as_json
     save_music_genres
-    puts "genre added sucessfully: genre = #{@genres}"
   end
 
   def select_genre
     puts 'select option to add genre:'
     puts '0. enter new genre'
-    @genres.each_with_index { |genre, index| puts "#{index + 1}. #{genre['name']}" }
+    @genres.each_with_index { |genre, index| puts "#{index + 1}. #{genre['name'] || genre[:name]}" }
     input = gets.chomp.to_i
     if input.zero?
       add_genre
@@ -165,23 +161,23 @@ class App
     @genres.each do |saved_genre|
       next unless saved_genre['name'] == genre
 
-      puts "saved_genre = #{saved_genre}"
       saved_genre['items'] << music_album.as_json
-      puts "saved_genre = #{saved_genre['items']}"
     end
     save_music_albums
     save_music_genres
   end
 
   def list_music_albums
-    @music_albums.each do |music_album|
-      puts music_album
+    puts 'music albums list:'
+    @music_albums.each_with_index do |music_album, index|
+      puts "#{index + 1}. #{music_album['title'] || music_album[:title]} by #{music_album['artist'] || music_album[:artist]}"
     end
   end
 
   def list_music_genres
-    @genres.each do |genre|
-      puts genre
+    puts 'music genres list:'
+    @genres.each_with_index do |genre, index|
+      puts "#{index + 1}. #{genre['name']}"
     end
   end
 
@@ -219,7 +215,7 @@ class App
       puts 'The book list: '
       puts
       @books.each_with_index do |b, indx|
-        puts "#{indx + 1}) Publisher: #{b.publisher} | Publish Date: #{b.publish_date} | Cover state: #{b.cover_state} | label: #{b.label.title}"
+        puts "#{indx + 1}) Publisher: #{b.publisher} | Publish Date: #{b.publish_date} | Cover state: #{b.cover_state} | label: "
       end
     end
   end
@@ -263,14 +259,13 @@ class App
     add_game = AddGame.new
     @games << add_game.create_game
     puts "The game was successfully created!\n\n"
-    puts @games
   end
 
   def list_games
     puts 'No Games Availabe' if @games.empty?
     puts 'Listing games...' unless @games.empty?
-    @games.each do |game|
-      puts game
+    @games.each_with_index do |game, index|
+      puts "#{index + 1}. #{game['title'] || game[:title]} | gameID: #{game['id'] || game[:id]}"
     end
   end
 
