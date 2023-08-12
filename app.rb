@@ -9,6 +9,7 @@ require_relative 'book/book'
 require_relative 'book/label'
 require_relative 'game/author'
 require 'json'
+require 'fileutils'
 
 class App
   def initialize
@@ -19,7 +20,7 @@ class App
     @authors = []
     @file_path = './storage/'.freeze
     @books = []
-    Dir.mkdir(@file_path) unless File.exist?(@file_path)
+    FileUtils.mkdir_p(@file_path)
   end
 
   def load_data
@@ -38,13 +39,13 @@ class App
 
   def read_books
     books = []
-    if File.exist?("#{@file_path}book.json")
-      all_books = File.read("#{@file_path}book.json")
-    else
-      all_books = []
-    end
+    all_books = if File.exist?("#{@file_path}book.json")
+                  File.read("#{@file_path}book.json")
+                else
+                  []
+                end
     if all_books.empty?
-      puts 'No available books '
+      puts ''
     elsif all_books.class != NilClass
       JSON.parse(all_books).each do |book|
         new_label = Label.new(book['label'], book['color'])
@@ -227,7 +228,7 @@ class App
 
   def labels_list
     if @books.empty?
-      puts 'No books available'
+      puts 'No labels available'
     else
       uniq_labels = @books.uniq { |x| x.label.title }
       uniq_labels.each_with_index do |s, index|
@@ -286,7 +287,7 @@ class App
     puts 'No Authors Availabe' if @authors.empty?
     puts 'Listing authors...' unless @authors.empty?
     @authors.each do |author|
-      puts "ID:#{author['id']} | #{author['first_name']} #{author['last_name']}"
+      puts "ID:#{author['id'] || author[:id]} | #{author['first_name'] || author[:first_name]} #{author['last_name'] || author[:last_name]}"
     end
   end
 end
