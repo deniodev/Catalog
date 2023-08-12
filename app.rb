@@ -19,7 +19,7 @@ class App
     @authors = []
     @file_path = './storage/'.freeze
     @books = []
-    Dir.mkdir(@file_path) unless File.exists?(@file_path)
+    Dir.mkdir(@file_path) unless File.exist?(@file_path)
   end
 
   def load_data
@@ -39,7 +39,7 @@ class App
   def read_books
     books = []
     if File.exist?("#{@file_path}book.json")
-      all_books = File.read("#{@file_path}book.json") 
+      all_books = File.read("#{@file_path}book.json")
     else
       all_books = []
     end
