@@ -121,7 +121,7 @@ Run rspec
 
 ## 🔭 Future Features <a name="future-features"></a>
 
-- [ ] Continuous Integration and Deployment
+- [ ] Continuous Integration and Deployment.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
